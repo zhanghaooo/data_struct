@@ -1,4 +1,5 @@
 #pragma once
+#include<exception>
 
 template<typename T>
 class Array {
@@ -7,10 +8,16 @@ private:
 	unsigned int size;
 	unsigned int capacity;
 public:
-	Array() : size(0), capacity(10), data(new T[capacity]()) {}
-	Array(unsigned int n) : size(n), capacity(2 * size), data(new T[capacity]()) {}
+	Array() : size(0), capacity(10), data(new T[10]()) {}
+	Array(unsigned int n) : size(n), capacity(2*n), data(new T[2*n]()) {}
 
-	unsigned int size() {
+	~Array() {
+		delete[] this->data;
+		this->size = 0;
+		this->capacity = 0;
+	}
+
+	unsigned int getSize() {
 		return this->size;
 	}
 
@@ -22,9 +29,9 @@ public:
 		return this->size == 0;
 	}
 
-	void insert(unsigned int index, T e) {
+	void insert(const unsigned int &index, const T &e) {
 		if (index > this->size)
-			throw out_of_range("array subscript out of range");
+			throw std::out_of_range("array subscript out of range");
 		if (this->size == this->capacity) {
 			T *tem = new T[2 * this->capacity]();
 			for (unsigned int i = 0; i < this->size; ++i)
@@ -39,13 +46,13 @@ public:
 		++this->size;
 	}
 
-	void pushBack(T e) {
+	void pushBack(const T &e) {
 		this->insert(this->size, e);
 	}
 
-	void erase(unsigned int index) {
+	void erase(const unsigned int &index) {
 		if (index >= this->size)
-			throw out_of_range("array subscript out of range");
+			throw std::out_of_range("array subscript out of range");
 		for (unsigned int i = index; i < this->size - 1; ++i)
 			this->data[i] = this->data[i + 1];
 		--this->size;
@@ -63,13 +70,13 @@ public:
 		this->erase(this->size - 1);
 	}
 
-	T& operator[](unsigned int index) {
+	T& operator[](const unsigned int &index) {
 		if (index >= this->size)
-			throw out_of_range("array subscript out of range");
+			throw std::out_of_range("array subscript out of range");
 		return this->data[index];
 	}
 
-	unsigned int find(T e) {
+	unsigned int find(const T &e) {
 		for (unsigned int i = 0; i < this->size; ++i) {
 			if (this->data[i] == e)
 				return i;
@@ -77,7 +84,7 @@ public:
 		return this->size;
 	}
 
-	unsigned int count(T e) {
+	unsigned int count(const T &e) {
 		unsigned int n = 0;
 		for (unsigned int i = 0; i < this->size; ++i) {
 			if (this->data[i] == e)
@@ -86,4 +93,11 @@ public:
 		return n;
 	}
 
+	void reverse() {
+		for (unsigned int i = 0; i < this->size/2; ++i) {
+			T tem = this->data[i];
+			this->data[i] = this->data[this->size - 1 - i];
+			this->data[this->size - 1 - i] = tem;
+		}
+	}
 };
