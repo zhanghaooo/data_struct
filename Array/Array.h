@@ -1,13 +1,16 @@
+#pragma once
+
+template<typename T>
 class Array {
 private:
-	int* data;
+	T* data;
 	unsigned int size;
 	unsigned int capacity;
 public:
-	Array() : size(0), capacity(10), data(new int[capacity]()) {}
-	Array(unsigned int n) : size(n), capacity(2 * size), data(new int[capacity]()) {}
+	Array() : size(0), capacity(10), data(new T[capacity]()) {}
+	Array(unsigned int n) : size(n), capacity(2 * size), data(new T[capacity]()) {}
 
-	unsigned int getSize() {
+	unsigned int size() {
 		return this->size;
 	}
 
@@ -19,11 +22,11 @@ public:
 		return this->size == 0;
 	}
 
-	void insert(unsigned int index, int e) {
-		if (index > this->size) 
+	void insert(unsigned int index, T e) {
+		if (index > this->size)
 			throw out_of_range("array subscript out of range");
 		if (this->size == this->capacity) {
-			int *tem = new int[2*this->capacity]();
+			T *tem = new T[2 * this->capacity]();
 			for (unsigned int i = 0; i < this->size; ++i)
 				tem[i] = this->data[i];
 			delete[] this->data;
@@ -36,7 +39,7 @@ public:
 		++this->size;
 	}
 
-	void pushBack(int e) {
+	void pushBack(T e) {
 		this->insert(this->size, e);
 	}
 
@@ -47,7 +50,7 @@ public:
 			this->data[i] = this->data[i + 1];
 		--this->size;
 		if (this->size == this->capacity / 4 && this->capacity > 1) {
-			int *tem = new int[this->capacity / 2]();
+			T *tem = new T[this->capacity / 2]();
 			for (unsigned int i = 0; i < this->size; ++i)
 				tem[i] = this->data[i];
 			delete[] this->data;
@@ -60,13 +63,13 @@ public:
 		this->erase(this->size - 1);
 	}
 
-	int& operator[](unsigned int index) {
-		if (index >= this->size) 
+	T& operator[](unsigned int index) {
+		if (index >= this->size)
 			throw out_of_range("array subscript out of range");
 		return this->data[index];
 	}
 
-	unsigned int find(int e) {
+	unsigned int find(T e) {
 		for (unsigned int i = 0; i < this->size; ++i) {
 			if (this->data[i] == e)
 				return i;
@@ -74,7 +77,7 @@ public:
 		return this->size;
 	}
 
-	unsigned int count(int e) {
+	unsigned int count(T e) {
 		unsigned int n = 0;
 		for (unsigned int i = 0; i < this->size; ++i) {
 			if (this->data[i] == e)
