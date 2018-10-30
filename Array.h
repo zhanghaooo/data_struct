@@ -8,8 +8,8 @@ private:
 	unsigned int size;
 	unsigned int capacity;
 public:
-	Array() : size(0), capacity(10), data(new T[10]()) {}
-	Array(unsigned int n) : size(n), capacity(2*n), data(new T[2*n]()) {}
+	Array() : size(0), capacity(10), data(new T[10]) {}
+	Array(unsigned int n) : size(n), capacity(2*n), data(new T[2*n]) {}
 
 	~Array() {
 		delete[] this->data;
@@ -29,17 +29,20 @@ public:
 		return this->size == 0;
 	}
 
+	void resize(const unsigned int &n) {
+		T *tem = new T[n];
+		for (unsigned int i = 0; i < this->size; ++i)
+			tem[i] = this->data[i];
+		delete[] this->data;
+		this->data = tem;
+		this->capacity = n;
+	}
+
 	void insert(const unsigned int &index, const T &e) {
 		if (index > this->size)
 			throw std::out_of_range("array subscript out of range");
-		if (this->size == this->capacity) {
-			T *tem = new T[2 * this->capacity]();
-			for (unsigned int i = 0; i < this->size; ++i)
-				tem[i] = this->data[i];
-			delete[] this->data;
-			this->data = tem;
-			this->capacity *= 2;
-		}
+		if (this->size == this->capacity)
+			this->resize(this->capacity * 2);
 		for (unsigned int i = this->size; i > index; --i)
 			this->data[i] = this->data[i - 1];
 		this->data[index] = e;
@@ -56,14 +59,8 @@ public:
 		for (unsigned int i = index; i < this->size - 1; ++i)
 			this->data[i] = this->data[i + 1];
 		--this->size;
-		if (this->size == this->capacity / 4 && this->capacity > 1) {
-			T *tem = new T[this->capacity / 2]();
-			for (unsigned int i = 0; i < this->size; ++i)
-				tem[i] = this->data[i];
-			delete[] this->data;
-			this->data = tem;
-			this->capacity /= 2;
-		}
+		if (this->size == this->capacity / 4 && this->capacity > 1)
+			this->resize(this->capacity / 2);
 	}
 
 	void popBack() {

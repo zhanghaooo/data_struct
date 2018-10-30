@@ -10,11 +10,15 @@ public:
 	Stack() : data(new Array<T>()) {}
 	Stack(unsigned int n) : data(new Array<T>(n)) {}
 
+	bool empty() {
+		return this->data->getSize() == 0;
+	}
+
 	void push(const T &e) {
 		this->data->pushBack(e);
 	}
 
-	T pop() {
+	T& pop() {
 		if (this->empty())
 			throw std::out_of_range("the stack is empty");
 		T tem = (*this->data)[this->data->getSize() - 1];
@@ -22,12 +26,8 @@ public:
 		return tem;
 	}
 
-	T top() {
+	T& top() {
 		return (*this->data)[this->data->getSize() - 1];
-	}
-
-	bool empty() {
-		return this->data->getSize() == 0;
 	}
 
 	unsigned int getSize() {
