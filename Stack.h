@@ -14,7 +14,7 @@ public:
 		return this->data->getSize() == 0;
 	}
 
-	void push(const T &e) {
+	void push(const T e) {
 		this->data->pushBack(e);
 	}
 

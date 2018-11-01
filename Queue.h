@@ -38,7 +38,7 @@ public:
 		this->tail = this->size;
 	}
 
-	void pushBack(const T &e) {
+	void pushBack(const T e) {
 		if (this->size == this->capacity)
 			this->resize(this->capacity * 2);
 		this->data[this->tail] = e;

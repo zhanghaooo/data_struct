@@ -38,7 +38,7 @@ public:
 		this->capacity = n;
 	}
 
-	void insert(const unsigned int &index, const T &e) {
+	void insert(const unsigned int &index, const T e) {
 		if (index > this->size)
 			throw std::out_of_range("array subscript out of range");
 		if (this->size == this->capacity)
@@ -49,7 +49,7 @@ public:
 		++this->size;
 	}
 
-	void pushBack(const T &e) {
+	void pushBack(const T e) {
 		this->insert(this->size, e);
 	}
 
