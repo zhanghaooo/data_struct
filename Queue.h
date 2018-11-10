@@ -4,68 +4,72 @@
 template<typename T>
 class Queue {
 private:
-	T *data;
-	unsigned int front, tail;
-	unsigned int size;
-	unsigned int capacity;
+	T *data_;
+	unsigned int front_, tail_;
+	unsigned int size_;
+	unsigned int capacity_;
 public:
-	Queue() : data(new T[10]), front(0), tail(0), size(0), capacity(10) {}
-	Queue(unsigned int n) : data(new T[n]), front(0), tail(0), size(0), capacity(n) {}
+	Queue() : data_(new T[10]), front_(0), tail_(0), size_(0), capacity_(10) {}
+	Queue(unsigned int n) : data_(new T[n]), front_(0), tail_(0), size_(0), capacity_(n) {}
 	~Queue() {
-		delete[] this->data;
+		delete[] data_;
 	}
 
 	bool empty() {
-		return this->size == 0;
+		return size_ == 0;
 	}
 	
-	unsigned int getSize() {
-		return this->size;
+	unsigned int size() {
+		return size_;
 	}
 
-	unsigned int getCapacity() {
-		return this->capacity;
+	unsigned int capacity() {
+		return capacity_;
 	}
 
 	void resize(const unsigned int &n) {
 		T *tem = new T[n];
-		for (unsigned int i = 0; i < this->size; ++i)
-			tem[i] = this->data[(this->front + i) % this->capacity];
-		delete[] this->data;
-		this->data = tem;
-		this->capacity = n;
-		this->front = 0;
-		this->tail = this->size;
+		for (unsigned int i = 0; i < size_; ++i)
+			tem[i] = data_[(front_ + i) % capacity_];
+		delete[] data_;
+		data_ = tem;
+		capacity_ = n;
+		front_ = 0;
+		tail_ = size_;
 	}
 
-	void pushBack(const T e) {
-		if (this->size == this->capacity)
-			this->resize(this->capacity * 2);
-		this->data[this->tail] = e;
-		this->tail = (this->tail + 1) % this->capacity;
-		++this->size;
+	void push(const T e) {
+		if (size_ == capacity_)
+			resize(capacity_ * 2);
+		data_[tail_] = e;
+		tail_ = (tail_ + 1) % capacity_;
+		++size_;
 	}
 
-	T& popFront() {
-		if (this->empty())
+	T& pop() {
+		if (empty())
 			throw std::out_of_range("the queue is empty");
 
-		T e = this->data[this->front];
-		this->front = (this->front + 1) % this->capacity;
-		--this->size;
-		if (this->size == this->capacity / 4 && this->capacity > 1)
-			this->resize(this->capacity / 2);
+		T e = data_[front_];
+		front_ = (front_ + 1) % capacity_;
+		--size_;
+		if (size_ == capacity_ / 4 && capacity_ > 1)
+			resize(capacity_ / 2);
 		return e;
 	}
 
 	T& operator[](const unsigned int &index) {
-		if (index >= this->size)
+		if (index >= size_)
 			throw std::out_of_range("queue subscript out of range");
-		return this->data[(this->front + index) % this->capacity];
+		return data_[(front_ + index) % capacity_];
 	}
 
-	T& getFront() {
-		return this->data[this->front];
+	T& front() {
+		return data_[front_];
+	}
+
+	T& back() {
+		return data_[tail_ - 1];
 	}
 
 

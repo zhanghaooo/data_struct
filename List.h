@@ -4,70 +4,67 @@
 template <typename T>
 class List {
 private:
-	class Node {
-	public:
+	struct Node {
 		T value;
 		Node* next;
 		Node() : value(NULL), next(NULL) {}
 		Node(T e, Node* n) :value(e), next(n) {}
 	};
-	Node *head;
-	unsigned int size;
+
+	Node *head_;
+	unsigned int size_;
 
 public:
-	List() : head(new Node()), size(0) {}
+	List() : head_(new Node()), size_(0) {}
 
-	unsigned int getSize() {
-		return this->size;
+	unsigned int size() {
+		return size_;
 	}
 
 	bool empty() {
-		return this->size == 0;
+		return size_ == 0;
 	}
 
-	void add(const unsigned int &index, const T e) {
-		if (index > this->size)
+	void insert(const unsigned int &index, const T e) {
+		if (index > size_)
 			throw std::out_of_range("list subscript out of range");
 
-		Node* pre = this->head;
+		Node* pre = head_;
 		for (unsigned int i = 0; i < index; ++i)
 			pre = pre->next;
 		pre->next = new Node(e, pre->next);
-		++this->size;
+		++size_;
 	}
 
-	void addFirst(const T e) {
-		this->add(0, e);
+	void push_front(const T e) {
+		insert(0, e);
 	}
 
-	void addLast(const T e) {
-		this->add(this->size, e);
-	}
-
-	void erase(const unsigned int *index) {
-		if (index >= this->size)
+	void erase(const unsigned int &index) {
+		if (index >= size_)
 			throw std::out_of_range("list subscript out of range");
 
-		Node* pre = this->head;
+		Node* pre = head_;
 		for (unsigned int i = 0; i < index; ++i)
 			pre = pre->next;
 		pre->next = pre->next->next;
-		--this->size;
+		--size_;
 	}
 
 	T& operator[](const unsigned int &index) {
-		if (index >= this->size)
+		if (index >= size_)
 			throw std::out_of_range("list subscript out of range");
-		Node* cur = this->head->next;
+
+		Node* p = head_->next;
 		for (unsigned int i = 0; i < index; ++i)
-			cur = cur->next;
-		return cur->value;
+			p = p->next;
+		return p->value;
 	}
 
 	bool find(const T &e) {
-		Node* cur = this->head;
-		while (cur->next && cur->next->value != e) 
-			cur = cur->next;
-		return cur;
+		Node* p = head_;
+		while (p->next && p->next->value != e) 
+			p = p->next;
+		return p;
 	}
 };

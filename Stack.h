@@ -5,36 +5,33 @@
 template <typename T>
 class Stack {
 private:
-	Array<T> *data;
+	Array<T> data_;
 public:
-	Stack() : data(new Array<T>()) {}
-	Stack(unsigned int n) : data(new Array<T>(n)) {}
-
 	bool empty() {
-		return this->data->getSize() == 0;
+		return data_.size() == 0;
 	}
 
 	void push(const T e) {
-		this->data->pushBack(e);
+		data_.push_back(e);
 	}
 
 	T& pop() {
-		if (this->empty())
+		if (empty())
 			throw std::out_of_range("the stack is empty");
-		T tem = (*this->data)[this->data->getSize() - 1];
-		this->data->erase(this->data->getSize() - 1);
+		T tem = data_[data_.size() - 1];
+		data_.erase(data_.size() - 1);
 		return tem;
 	}
 
-	T& top() {
-		return (*this->data)[this->data->getSize() - 1];
+	T& top() {  
+		return data_[data_.size() - 1];
 	}
 
-	unsigned int getSize() {
-		return this->data->getSize();
+	unsigned int size() {
+		return data_.size();
 	}
 
-	unsigned int getCapacity() {
-		return this->data->getCapacity();
+	unsigned int capacity() {
+		return data_.capacity();
 	}
 };

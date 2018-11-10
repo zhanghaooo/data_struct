@@ -4,97 +4,101 @@
 template<typename T>
 class Array {
 private:
-	T* data;
-	unsigned int size;
-	unsigned int capacity;
+	T* data_;
+	unsigned int size_;
+	unsigned int capacity_;
 public:
-	Array() : size(0), capacity(10), data(new T[10]) {}
-	Array(unsigned int n) : size(n), capacity(2*n), data(new T[2*n]) {}
+	Array() : size_(0), capacity_(10), data_(new T[10]) {}
+	Array(unsigned int n) : size_(n), capacity_(2 * n), data_(new T[2 * n]) {}
 
 	~Array() {
-		delete[] this->data;
-		this->size = 0;
-		this->capacity = 0;
+		delete[] data_;
+		size_ = 0;
+		capacity_ = 0;
 	}
 
-	unsigned int getSize() {
-		return this->size;
+	unsigned int size() {
+		return size_;
 	}
 
-	unsigned int getCapacity() {
-		return this->capacity;
+	unsigned int capacity() {
+		return capacity_;
 	}
 
-	bool isEmpty() {
-		return this->size == 0;
+	bool empty() {
+		return size_ == 0;
+	}
+
+	void clear() {
+		size_ = 0;
 	}
 
 	void resize(const unsigned int &n) {
 		T *tem = new T[n];
-		for (unsigned int i = 0; i < this->size; ++i)
-			tem[i] = this->data[i];
-		delete[] this->data;
-		this->data = tem;
-		this->capacity = n;
+		for (unsigned int i = 0; i < size_; ++i)
+			tem[i] = data_[i];
+		delete[] data_;
+		data_ = tem;
+		capacity_ = n;
 	}
 
 	void insert(const unsigned int &index, const T e) {
-		if (index > this->size)
+		if (index > size_)
 			throw std::out_of_range("array subscript out of range");
-		if (this->size == this->capacity)
-			this->resize(this->capacity * 2);
-		for (unsigned int i = this->size; i > index; --i)
-			this->data[i] = this->data[i - 1];
-		this->data[index] = e;
-		++this->size;
+		if (size_ == capacity_)
+			resize(capacity_ * 2);
+		for (unsigned int i = size_; i > index; --i)
+			data_[i] = data_[i - 1];
+		data_[index] = e;
+		++size_;
 	}
 
-	void pushBack(const T e) {
-		this->insert(this->size, e);
+	void push_back(const T e) {
+		insert(size_, e);
 	}
 
 	void erase(const unsigned int &index) {
-		if (index >= this->size)
+		if (index >= size_)
 			throw std::out_of_range("array subscript out of range");
-		for (unsigned int i = index; i < this->size - 1; ++i)
-			this->data[i] = this->data[i + 1];
-		--this->size;
-		if (this->size == this->capacity / 4 && this->capacity > 1)
-			this->resize(this->capacity / 2);
+		for (unsigned int i = index; i < size_ - 1; ++i)
+			data_[i] = data_[i + 1];
+		--size_;
+		if (size_ == capacity_ / 4 && capacity_ > 1)
+			resize(capacity_ / 2);
 	}
 
-	void popBack() {
-		this->erase(this->size - 1);
+	void pop_back() {
+		erase(size_ - 1);
 	}
 
 	T& operator[](const unsigned int &index) {
-		if (index >= this->size)
+		if (index >= size_)
 			throw std::out_of_range("array subscript out of range");
-		return this->data[index];
+		return data_[index];
 	}
 
 	unsigned int find(const T &e) {
-		for (unsigned int i = 0; i < this->size; ++i) {
-			if (this->data[i] == e)
+		for (unsigned int i = 0; i < size_; ++i) {
+			if (data_[i] == e)
 				return i;
 		}
-		return this->size;
+		return size_;
 	}
 
 	unsigned int count(const T &e) {
 		unsigned int n = 0;
-		for (unsigned int i = 0; i < this->size; ++i) {
-			if (this->data[i] == e)
+		for (unsigned int i = 0; i < size_; ++i) {
+			if (data_[i] == e)
 				++n;
 		}
 		return n;
 	}
 
 	void reverse() {
-		for (unsigned int i = 0; i < this->size/2; ++i) {
-			T tem = this->data[i];
-			this->data[i] = this->data[this->size - 1 - i];
-			this->data[this->size - 1 - i] = tem;
+		for (unsigned int i = 0; i < size_ / 2; ++i) {
+			T tem = data_[i];
+			data_[i] = data_[size_ - 1 - i];
+			data_[size_ - 1 - i] = tem;
 		}
 	}
 };
