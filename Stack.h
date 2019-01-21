@@ -1,11 +1,11 @@
 #pragma once
 #include<exception>
-#include"Array.h"
+#include"Vector.h"
 
 template <typename T>
 class Stack {
 private:
-	Array<T> data_;
+	Vector<T> data_;
 public:
 	bool empty() {
 		return data_.size() == 0;

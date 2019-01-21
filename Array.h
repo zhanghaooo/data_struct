@@ -1,104 +1,121 @@
 #pragma once
 #include<exception>
+#include<ostream>
 
 template<typename T>
 class Array {
+	using size_t = unsigned int;
 private:
-	T* data_;
-	unsigned int size_;
-	unsigned int capacity_;
+	size_t size_;
+	T *data_;
+
 public:
-	Array() : size_(0), capacity_(10), data_(new T[10]) {}
-	Array(unsigned int n) : size_(n), capacity_(2 * n), data_(new T[2 * n]) {}
+	Array() = default;
 
-	~Array() {
-		delete[] data_;
-		size_ = 0;
-		capacity_ = 0;
+	Array(const size_t &size) : size_(size), data_(new T[size]) {}
+
+	Array(const size_t &size, const T &value) : size_(size), data_(new T[size])
+	{
+		for (size_t i = 0; i < size; ++i) {
+			data_[i] = value;
+		}
 	}
 
-	unsigned int size() {
-		return size_;
+	//copy constructor
+	Array(const Array<T> &array) : size_(array.size_), data_(new T[array.size_])
+	{
+		for (size_t i = 0; i < array.size_; ++i) {
+			data_[i] = array.data_[i];
+		}
 	}
 
-	unsigned int capacity() {
-		return capacity_;
+	//copy-assignment operator
+	Array<T>& operator = (const Array<T> &array)
+	{
+		if (size_ > 0) {
+			delete[] data_;
+		}
+		size_ = array.size_;
+		data_ = new T[size_];
+		for (size_t i = 0; i < size_; ++i) {
+			data_[i] = array.data_[i];
+		}
+		return *this;
 	}
 
-	bool empty() {
-		return size_ == 0;
+	//destruct
+	~Array()
+	{
+		delete[]data_;
+		data_ = nullptr;
 	}
 
-	void clear() {
-		size_ = 0;
-	}
-
-	void resize(const unsigned int &n) {
-		T *tem = new T[n];
-		for (unsigned int i = 0; i < size_; ++i)
-			tem[i] = data_[i];
-		delete[] data_;
-		data_ = tem;
-		capacity_ = n;
-	}
-
-	void insert(const unsigned int &index, const T e) {
-		if (index > size_)
-			throw std::out_of_range("array subscript out of range");
-		if (size_ == capacity_)
-			resize(capacity_ * 2);
-		for (unsigned int i = size_; i > index; --i)
-			data_[i] = data_[i - 1];
-		data_[index] = e;
-		++size_;
-	}
-
-	void push_back(const T e) {
-		insert(size_, e);
-	}
-
-	void erase(const unsigned int &index) {
-		if (index >= size_)
-			throw std::out_of_range("array subscript out of range");
-		for (unsigned int i = index; i < size_ - 1; ++i)
-			data_[i] = data_[i + 1];
-		--size_;
-		if (size_ == capacity_ / 4 && capacity_ > 1)
-			resize(capacity_ / 2);
-	}
-
-	void pop_back() {
-		erase(size_ - 1);
-	}
-
-	T& operator[](const unsigned int &index) {
-		if (index >= size_)
-			throw std::out_of_range("array subscript out of range");
+	T& operator [] (const size_t &index)
+	{
+		if (index >= size_) {
+			throw std::out_of_range("Array subscript out of range\n");
+		}
 		return data_[index];
 	}
 
-	unsigned int find(const T &e) {
-		for (unsigned int i = 0; i < size_; ++i) {
-			if (data_[i] == e)
-				return i;
+	const T& operator [] (const size_t &index) const
+	{
+		if (index >= size_) {
+			throw std::out_of_range("Array subscript out of range\n");
 		}
+		return data_[index];
+	}
+
+	size_t size()
+	{
 		return size_;
 	}
 
-	unsigned int count(const T &e) {
-		unsigned int n = 0;
-		for (unsigned int i = 0; i < size_; ++i) {
-			if (data_[i] == e)
-				++n;
-		}
-		return n;
+	bool empty()
+	{
+		return size_ == 0;
 	}
 
-	void reverse() {
-		for (unsigned int i = 0; i < size_ / 2; ++i) {
-			T tem = data_[i];
-			data_[i] = data_[size_ - 1 - i];
-			data_[size_ - 1 - i] = tem;
+	T front()
+	{
+		if (size_ == 0) {
+			throw std::out_of_range("front() called on empty Array\n");
 		}
+		return data_[0];
+	}
+
+	T back()
+	{
+		if (size_ == 0) {
+			throw std::out_of_range("back() called on empty Array\n");
+		}
+		return data_[size_ - 1];
+	}
+
+	friend bool operator == (const Array<T> &array1, const Array<T> &array2) 
+	{
+		if (array1.size_ != array2.size_) {
+			return false;
+		}
+		for (size_t i = 0; i < array1.size_; ++i) {
+			if (array1.data_[i] != array2.data_[i])
+				return false;
+		}
+		return true;
+	}
+
+	friend std::ostream &operator << (std::ostream &os, const Array<T> &array)
+	{
+		for (size_t i = 0; i < array.size_; ++i) {
+			os << array.data_[i] << " ";
+		}
+		return os;
+	}
+
+	friend void swap(Array<T> &array1, Array<T> &array2)
+	{
+		using std::swap;
+		swap(array1.size_, array2.size_);
+		swap(array1.data_, array2.data_);
 	}
 };
