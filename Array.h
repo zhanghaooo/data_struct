@@ -1,6 +1,7 @@
 #pragma once
 #include<exception>
 #include<ostream>
+#include<initializer_list>
 
 template<typename T>
 class Array {
@@ -10,14 +11,21 @@ private:
 	T *data_;
 
 public:
-	Array() = default;
-
 	Array(const size_t &size) : size_(size), data_(new T[size]) {}
 
 	Array(const size_t &size, const T &value) : size_(size), data_(new T[size])
 	{
 		for (size_t i = 0; i < size; ++i) {
 			data_[i] = value;
+		}
+	}
+
+	Array(std::initializer_list<T> il): Array((size_t)il.size())
+	{
+		auto it = il.begin();
+		for (int i = 0; i < il.size(); ++i) {
+			data_[i] = *it;
+			++it;
 		}
 	}
 
@@ -46,7 +54,7 @@ public:
 	//destruct
 	~Array()
 	{
-		delete[]data_;
+		delete[] data_;
 		data_ = nullptr;
 	}
 
@@ -69,11 +77,6 @@ public:
 	size_t size()
 	{
 		return size_;
-	}
-
-	bool empty()
-	{
-		return size_ == 0;
 	}
 
 	T front()

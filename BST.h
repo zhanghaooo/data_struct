@@ -3,19 +3,22 @@
 
 template<typename T>
 class BST {
+	using size_t = unsigned int;
 private:
-	struct Node {
+	struct Node 
+	{
 		T value;
 		Node *left;
 		Node *right;
 
-		Node(T e) :value(e), left(NULL), right(NULL) {}
+		Node(T e) :value(e), left(nullptr), right(nullptr) {}
 	};
 
 	Node *root_;
-	unsigned int size_;
+	size_t size_;
 
-	T pop_max(Node *&root) {
+	T pop_max(Node *&root) 
+	{
 		if (!root)
 			return NULL;
 		--size_;
@@ -33,7 +36,8 @@ private:
 		return maximum;
 	}
 
-	T pop_min(Node *&root) {
+	T pop_min(Node *&root) 
+	{
 		if (!root)
 			return NULL;
 		--size_;
@@ -52,17 +56,20 @@ private:
 	}
 
 public:
-	BST() :root_(NULL), size_(0) {}
+	BST() :root_(nullptr), size_(0) {}
 	
-	unsigned int size() {
+	size_t size()
+	{
 		return size_;
 	}
 
-	bool empty() {
+	bool empty() 
+	{
 		return size_ == 0;
 	}
 
-	void insert(T e) {
+	void insert(T e) 
+	{
 		Node **p = &root_; 
 		while (*p) {
 			if ((*p)->value == e)
@@ -73,7 +80,8 @@ public:
 		++size_;
 	}
 
-	bool find(const T &e) {
+	bool find(const T &e) 
+	{
 		Node *p = root_;
 		while (p) {
 			if (p->value == e)
@@ -83,16 +91,26 @@ public:
 		return false;
 	}
 
-	T pop_max() {
+	T pop_max() 
+	{
 		return pop_max(root_);
 	}
 
-	T pop_min() {
+	T pop_min() 
+	{
 		return pop_min(root_);
 	}
 
-	void erase(const T &e) {
-		if (root_->value == e) {
+	void erase(const T &e) 
+	{
+		Node *pre = NULL, *p = root_;
+		while (p && p->value != e) {
+			pre = p;
+			p = (p->value < e) ? p->right : p->left;
+		}
+		if (!p)
+			return;
+		if (p == root_) {
 			if (root_->left && root_->right)
 				root_->value = pop_min(root_->right);
 			else {
@@ -102,17 +120,9 @@ public:
 			return;
 		}
 
-		Node *pre = NULL, *p = root_;
-		while (p && p->value != e) {
-			pre = p;
-			p = (p->value < e) ? p->right : p->left;
-		}
-		if (!p)
-			return;
-
 		if (p->left && p->right) 
 			p->value = pop_min(p->right);
-		else {
+		else { 
 			--size_;
 			if (p->value < pre->value)
 				pre->left = (p->left) ? p->left : p->right;
@@ -120,5 +130,20 @@ public:
 				pre->right = (p->left) ? p->left : p->right;
 		}
 	}
-	 
+
+	friend std::ostream& operator << (std::ostream &os, const BST<T> &bst)
+	{
+		Stack<Node*> s;
+		Node* p = bst.root_;
+		while (p || !s.empty()) {
+			while (p) {
+				s.push(p);
+				p = p->left;
+			}
+			p = s.pop();
+			os << p->value << " ";
+			p = p->right;
+		}
+		return os;
+	}
 };

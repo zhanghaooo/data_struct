@@ -22,12 +22,22 @@ private:
 	}
 
 public:
-	Vector() = default;
+	Vector() : size_(0), data_(0) {}
 
 	Vector(const size_t &size) : size_(size), data_(Array<T>(size)) {}
     
 	Vector(const size_t &size, const T &value) : size_(size), data_(Array<T>(size, value)) {}
 
+	Vector(std::initializer_list<T> il) : Vector((size_t)il.size())
+	{
+		auto it = il.begin();
+		for (int i = 0; i < il.size(); ++i) {
+			data_[i] = *it;
+			++it;
+		}
+	}
+
+	//copy-assignment operator
 	Vector<T>& operator = (const Vector<T> &v) 
 	{
 		if (this == &v)
@@ -61,8 +71,10 @@ public:
 	{
 		if (index > size_)
 			throw std::out_of_range("Vector subscript out of range");
-		if (size_ == data_.size())
+		if (size_ == data_.size() && size_ > 0)
 			resize(data_.size() * 2);
+		else
+			resize(1);
 		for (size_t i = size_; i > index; --i)
 			data_[i] = data_[i - 1];
 		data_[index] = e;
