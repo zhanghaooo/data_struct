@@ -71,10 +71,10 @@ public:
 	{
 		if (index > size_)
 			throw std::out_of_range("Vector subscript out of range");
-		if (size_ == data_.size() && size_ > 0)
-			resize(data_.size() * 2);
-		else
-			resize(1);
+		if (size_ == data_.size()) {
+			size_ = (size_ == 0) ? 1 : 2 * size_;
+			resize(size_);
+		}
 		for (size_t i = size_; i > index; --i)
 			data_[i] = data_[i - 1];
 		data_[index] = e;
